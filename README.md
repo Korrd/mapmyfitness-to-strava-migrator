@@ -1,0 +1,1 @@
+# mapmyfitness-to-strava-migrator
