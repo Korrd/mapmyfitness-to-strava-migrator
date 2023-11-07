@@ -1,10 +1,3 @@
-# This should: 
-# - Read the mapmyride csv file that lists all practices
-# - For each item, get the TCX file corresponding to the link column
-# - Upload that TCX file to strava
-
-# Note that the strava API will only allow 200 uploads every 15 minutes, and no more than 2000 a day.
-# We need a mechanism to prevent hitting the limit and getting failures
 
 # TODO - Nice to have: automatic oauth2 auth flow
 
