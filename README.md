@@ -34,9 +34,9 @@ You can get it as follows:
 Invoke it as follows: 
 
 ```bash
-python migrate-mapmyride-to-strava.py --csv_file=my_mmr_worklouts_file.csv --mmr_cookie="session cookie on a string" --strava-access-token="access token with activity:write permission"
+python migrate-mapmyride-to-strava.py --mmr_cookie="<session cookie on a string>" --strava-access-token="<access token with activity:write permission>"
 ```
 
 Once the script is triggered, it'll request all of your workouts one by one as per the CSV file and download them to a folder called outputs.
 
-Once downloaded, it'll upload them all to Strava as quickly as [Strava's API ratelimiter](https://developers.strava.com/docs/getting-started/#basic) will allow.
+Once downloaded, it'll upload them all to Strava as quickly as the [Strava's API ratelimiter](https://developers.strava.com/docs/getting-started/#basic) allows.
