@@ -29,10 +29,6 @@ You can get it as follows:
 - [Creating a Strava API APP](https://developers.strava.com/docs/getting-started/#account) - Follow from step 2 on. This'll give you a read-only app. That's fine, as we'll get a write access app on the next step
 - [Getting a Strava write token](https://yizeng.me/2017/01/11/get-a-strava-api-access-token-with-write-permission/) - This'll give you a write app. When adding the permission strings only add the `activity:write` permission, since there's an issue when creating a write token with more than one permission at a time.
 
-### csv-file
-
-This file contains a list of all activities within your mapmyride account. Obtain it by [following these instructions](https://support.mapmyfitness.com/hc/en-us/articles/1500009118782-Export-Workout-Data) and place it on the script's folder.
-
 ## How to use it
 
 Invoke it as follows: 
