@@ -55,7 +55,7 @@ def print_help_text(exit_code:int = 1):
   )
   print("--help              | Prints this help text")
   exit(exit_code)
-  
+
 def get_mmr_csv_file(headers:tuple, url: str, workdir: str) -> bool:
   """
   This function will get mapMyRide's workout list as a csv file and save it for use by the uploader.
@@ -226,7 +226,9 @@ def upload_workouts_to_strava(tcx_files_dir: str, workout_list: list, strava_acc
     response_x_ratelimit_usage = response.headers._container['x-ratelimit-usage'][1].split(",")
 
     if response_status_code == '201': # Success!
-      print(f"✅ Workout \"{workout_file}\" uploaded successfully. 15m ratelimit [used/limit]: [{response_x_ratelimit_usage[0]},{response_x_ratelimit_limit[0]}] daily ratelimit [used/limit]: [{response_x_ratelimit_usage[1]},{response_x_ratelimit_limit[1]}]")
+      print(f"✅ Workout \"{workout_file}\" uploaded successfully. \
+            15m ratelimit [used/limit]: [{response_x_ratelimit_usage[0]},{response_x_ratelimit_limit[0]}] \
+            daily ratelimit [used/limit]: [{response_x_ratelimit_usage[1]},{response_x_ratelimit_limit[1]}]")
       os.rename(f"{tcx_files_dir}/{workout_file}",f"{tcx_files_dir}/archive/{workout_file}")
     elif response_status_code == '429': # Hit ratelimiter
       print(f"\n⏰ Workout \"{workout_file}\" hit a ratelimit. Waiting {throttle_wait / 60} minutes before retrying\n")
