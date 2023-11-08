@@ -1,0 +1,19 @@
+certifi~=2023.7.22
+cffi~=1.15.1
+charset-normalizer~=3.3.2
+cryptography @ file:///private/tmp/python-cryptography-20230802-6609-hza959/cryptography-41.0.3
+docutils~=0.20.1
+gpxpy~=1.6.1
+idna~=3.4
+lxml~=4.9.3
+pycparser~=2.21
+python-dateutil~=2.8.2
+python-tcxparser~=2.3.0
+PyYAML @ file:///private/tmp/pyyaml-20230718-6387-cxgeib/PyYAML-6.0.1
+requests~=2.31.0
+six~=1.16.0
+swaggerpy~=0.2.1
+tcx2gpx~=0.1.5
+tqdm~=4.66.1
+urllib3~=2.0.7
+websocket-client~=1.6.4
