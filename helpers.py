@@ -1,4 +1,3 @@
-# Unused code from the migrator app
 import  csv, json, os, time, urllib.request, urllib3, zlib
 
 def get_argument_value(args, flag, separator="="):
