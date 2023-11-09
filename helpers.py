@@ -1,20 +1,53 @@
+"""
+This module contains all functions used by this program, for greater code clarity.
+
+  - `download_mmr_workouts()`: downloads workouts from mapmyride
+  - `get_mmr_csv_file()`: gets a list of all workouts as a csv file
+  - `get_strava_access_token()`: `WIP`: gets strava's write access token. Part of the not yet implemented oauth2 auth flow
+  - `list_mmr_workouts()`: builds a list of mapmyride workouts with only the data we need
+  - `print_help_text()`: prints this program's help text and quits
+  - `upload_workouts_to_strava()`: uploads all workouts to strava from TCX files
+
+For more details onto each function, these are also docstring'd. 
+"""
 import  csv, json, os, time, urllib.request, urllib3, zlib
 
-def get_argument_value(args, flag, separator="="):
+def get_argument_value(args:list[str], flag:str, separator:str = "=") -> str:
   """
-  This function takes an argument list (args) and returns the value for a given flag in it,
-  using the separator param to discern key from value. If not found, it'll return an empty string.
+  #### Description
+  A key-value search that will search a list and return the value of a given flag, or an empty string if not found.
+  
+  #### Parameters
+    - `args`: list of arguments from the command line, each element in a --key=value format but the first one which is the file's path
+    - `flag`: '--key' to search its 'value' for
+    - `separator`: argument separator. An '=' sign by default
+  
+  #### Returns
+    - The `flag's value` if found. Otherwise an `empty string`
+
+  #### Notes
+  If your value also contains instances of the separator itself as a part of it, set the separator as --flag+separator: i.e '--flag='
   """
   for element in args:
     if element.startswith(flag):
       return element.split(separator)[1]
-  return ""  # Return empty if not found
+  return "" # Return empty if not found
 
 def get_strava_access_token(client_id:str, client_secret:str, auth_code:str) -> str:
   """
-  This function implements an oauth2 flow as per the strava API guide at https://developers.strava.com/docs/getting-started/#oauth.
-  It'll take the client ID, client secret and auth code from the previous auth step and return the write token 
-  required to upload activities. This is still a WIP.
+  #### Description
+  `WIP - Not for use yet`. Implements part of an oauth2 authorization flow as per the strava API guide at https://developers.strava.com/docs/getting-started/#oauth.
+  
+  #### Parameters
+    - `client_id`: The client ID from the strava API app
+    - `client_secret`: The client secret from the strava API app
+    - `auth_code`: A code returned as part of the previous authorization bit, which is single-use
+  
+  #### Returns
+    - The `strava access token`, with whatever permissions were set during the previous oauth2 step
+
+  #### Notes
+  This function is part of an oauth2 authorization flow. It does not yet handle the previous step which actually authorizes access, but rather the token bits. `Hence, this is still a work in progress`, not intended yet for use.
   """
   http = urllib3.PoolManager()
   
@@ -38,7 +71,11 @@ def get_strava_access_token(client_id:str, client_secret:str, auth_code:str) -> 
 
 def print_help_text(exit_code:int = 1):
   """
-  This function prints the scripts' help text to stdout and exits with the exit code specified as its argument.
+  #### Description
+  Prints this program's help text `and quits` with the provided exit code.
+  
+  #### Parameters
+    - `exit_code`: The exit code we want to exit with
   """
   print("=" * 52)
   print("| Tool to migrate all mapmyride workouts to strava |".center(52))
@@ -56,12 +93,21 @@ def print_help_text(exit_code:int = 1):
   print("--help              | Prints this help text")
   exit(exit_code)
 
-def get_mmr_csv_file(headers:tuple, url: str, workdir: str) -> bool:
+def get_mmr_csv_file(headers:tuple, workdir: str, url: str = "https://www.mapmyfitness.com/workout/export/csv") -> bool:
   """
-  This function will get mapMyRide's workout list as a csv file and save it for use by the uploader.
-  It'll return True if successful, False otherwise.
-  Since headers are the same as for other mapMyRide request it'll take a headers tuple containing them all.
-  It'll also take the script's workdir as well as the url endpoint to query for the csv file.
+  #### Description
+  Gets mapMyRide's workout list as a csv file and saves it for use by the uploader.
+  
+  #### Parameters
+    - `headers`: A tuple containing the headers required for this request
+    - `url`: Endpoint where to download the CSV file data from. Defaults to currently known value but can be overriden
+    - `workdir`: Working directory where to store the CSV file at
+  
+  #### Returns
+    - `True` if successful, `False` if not.
+
+  #### Notes
+  This function and how to retrieve the csv file programatically were derived from its [CSV documentation](https://support.mapmyfitness.com/hc/en-us/articles/1500009118782-Export-Workout-Data) & by some req-res hacking, since applications for API access are no longer being granted.
   """
   outputfile = f"{workdir}/workout_list.csv"
   # First, lets build our request, with stolen data from an actually working request from the 
@@ -84,10 +130,18 @@ def get_mmr_csv_file(headers:tuple, url: str, workdir: str) -> bool:
 
   return True, outputfile
 
-def list_mmr_workouts(csv_file: str) -> list:
+def list_mmr_workouts(csv_file_path: str) -> list:
   """
-  This function reads the mapMyRide csv file (provided as a path via the csv_file param), and returns a list that will contain
-  only those colums we'll be using. 
+  #### Description
+  Reads the mapMyRide csv file and returns a list that only contains those colums we'll be using.
+  #### Parameters
+    - `csv_file_path`: Full path to the csv_file to be read
+  
+  #### Returns
+    - A `list` containing only those items that'll be used by this program
+
+  #### Notes
+  This one comes from analyzing mapMyRide's CSV file, since it's not documented anywhere and they're no longer granting requests for API access.
   """
   # From csv file analysis
   col_workout_type = 2
@@ -96,7 +150,7 @@ def list_mmr_workouts(csv_file: str) -> list:
   col_dl_link = 14
   payload = []
   # First, let's get info required to download a workout
-  with open (csv_file, mode="r", newline="") as csvfile:
+  with open (csv_file_path, mode="r", newline="") as csvfile:
     item = csv.reader(csvfile, delimiter=",")
     for row in item:
       # This will skip the CSV file's header
@@ -114,11 +168,21 @@ def list_mmr_workouts(csv_file: str) -> list:
       payload.append([link, notes, workout_type, workout_id])
   return payload
 
-def download_mmr_workouts(headers: tuple, workdir: str, outsubdir: str, workout_list: list) -> bool:
+def download_mmr_workouts(headers: tuple, output_dir: str, workout_list: list) -> bool:
   """
-  This function will take the headers, script's workdir, the outsubdir (name for a subdir to store files at the workdir),
-  and the workout list from the list_mmr_workouts function, and use these to download ALL workouts from mapMyRide, saving
-  each as an individual TCX file. It'll return True on success, False otherwise.
+  #### Description
+  Downloads all workouts, each as a TCX file, from a mapmyride account onto a chosen directory.
+  
+  #### Parameters
+    - `headers`: A tuple containing the headers required for this request
+    - `output_dir`: Target directory where to store the workouts at
+    - `workout_list`: The list generated by the `list_mmr_workouts()` function
+  
+  #### Returns
+    - `True` if successful, `False` if not
+
+  #### Notes
+  This function may take a while to run if the targeted mapmyride account holds too many workouts. Since there's no public-facing API documentation available, it's unknown if a ratelimiter is implemented on their side.
   """
   # Let's download each file from the payload list to a temp folder
   i = 0 # This'll be used to generate unique readable filenames
@@ -128,7 +192,7 @@ def download_mmr_workouts(headers: tuple, workdir: str, outsubdir: str, workout_
     filename = f"{'{0:0>4}'.format(str(i))}-{id}-{wtype.replace(' ','-').replace('/','')}.tcx"
     i = i + 1
 
-    outputfile = f"{workdir}/{outsubdir}/{filename}"
+    outputfile = f"{output_dir}/{filename}"
     if not os.path.isfile(outputfile):
       # First, lets build our request, with stolen data from an actually working request from the 
       # mapMyRide website. Auth cookie as well.
@@ -156,13 +220,24 @@ def download_mmr_workouts(headers: tuple, workdir: str, outsubdir: str, workout_
       print(f"✅ Skipping file \"{filename}\", as it already exists...")
       continue
 
-  print(f"\n🏁 Workouts downloaded. \"{i}\" workout{'s' if i > 1 else ''} to \"{workdir}/{outsubdir}\"\n")
+  print(f"\n🏁 Workouts downloaded. \"{i}\" workout{'s' if i > 1 else ''} to \"{output_dir}\"\n")
   return True
 
-def upload_workouts_to_strava(tcx_files_dir: str, workout_list: list, strava_access_token: str) -> bool:
+def upload_workouts_to_strava(workouts_dir: str, workout_list: list, strava_access_token: str) -> bool:
   """
-  This function takes the tcx files dir, the workout list from the list_mmr_workouts function, and the strava write access token,
-  and uploads all TCX files that match the workout_list items by workout ID to Strava. It'll return True on success, False otherwise.
+  #### Description
+  Uploads all workouts found on a given directory that match the mapmyride CSV file to Strava.
+  
+  #### Parameters
+    - `workouts_dir`: The full path to the directory where all the TCX files reside
+    - `workout_list`: The list generated by the `list_mmr_workouts()` function
+    - `strava_access_token`: The strava access token provided to this program
+  
+  #### Returns
+    - `True` if successful, `False` if not
+
+  #### Notes
+  This function may take a while to run if there are too many workouts, since Strava implements [a ratelimiter on its API](https://developers.strava.com/docs/getting-started/#basic).
   """
   throttle_wait = 910 # Sleep for 15 minutes before resuming, to avoid 
                       # hitting API ratelimiter
@@ -170,7 +245,7 @@ def upload_workouts_to_strava(tcx_files_dir: str, workout_list: list, strava_acc
   # ===============================================================================================
   # First, let's construct a list of files to upload ==============================================
   # ===============================================================================================
-  filelist = os.listdir(tcx_files_dir)
+  filelist = os.listdir(workouts_dir)
 
   result = {}
   for list_element in filelist:
@@ -190,7 +265,7 @@ def upload_workouts_to_strava(tcx_files_dir: str, workout_list: list, strava_acc
   http = urllib3.PoolManager()
   
   for link, notes, workout_type, workout_id, workout_file in full_list:
-    with open(tcx_files_dir + "/" + workout_file, 'rb') as file:
+    with open(workouts_dir + "/" + workout_file, 'rb') as file:
       tcx_data = file.read()
 
     # Create the request headers
@@ -202,7 +277,7 @@ def upload_workouts_to_strava(tcx_files_dir: str, workout_list: list, strava_acc
     # create the data payload
     data = {
       "data_type": "tcx",
-      'file': (tcx_files_dir + "/" + workout_file, tcx_data, 'application/tcx'),
+      'file': (workouts_dir + "/" + workout_file, tcx_data, 'application/tcx'),
       'description': notes
     }
     
@@ -229,7 +304,7 @@ def upload_workouts_to_strava(tcx_files_dir: str, workout_list: list, strava_acc
       print(f"✅ Workout \"{workout_file}\" uploaded successfully. \
             15m ratelimit [used/limit]: [{response_x_ratelimit_usage[0]},{response_x_ratelimit_limit[0]}] \
             daily ratelimit [used/limit]: [{response_x_ratelimit_usage[1]},{response_x_ratelimit_limit[1]}]")
-      os.rename(f"{tcx_files_dir}/{workout_file}",f"{tcx_files_dir}/archive/{workout_file}")
+      os.rename(f"{workouts_dir}/{workout_file}",f"{workouts_dir}/archive/{workout_file}")
     elif response_status_code == '429': # Hit ratelimiter
       print(f"\n⏰ Workout \"{workout_file}\" hit a ratelimit. Waiting {throttle_wait / 60} minutes before retrying\n")
       time.sleep(throttle_wait)
