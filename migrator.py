@@ -54,11 +54,10 @@ def main(args):
     print("❌ Failed to Obtain CSV file.")
     exit(1)
 
-  workout_list = f.list_mmr_workouts(csv_file)
+  workout_list = f.list_mmr_workouts(csv_file_path=csv_file)
 
-  result = f.download_mmr_workouts(headers=mmr_headers, workdir=workdir,
-                        outsubdir=files_dir,
-                        workout_list=workout_list,
+  result = f.download_mmr_workouts(headers=mmr_headers, output_dir=f"{workdir}/{files_dir}",
+                        workout_list=workout_list
                         )
 
   if not result:
@@ -67,7 +66,7 @@ def main(args):
   else:
     print("\n✅ Workouts downloaded. Uploading to Strava...\n")
 
-  result = f.upload_workouts_to_strava(tcx_files_dir=f"{workdir}/{files_dir}",
+  result = f.upload_workouts_to_strava(workouts_dir=f"{workdir}/{files_dir}",
                             workout_list=workout_list,
                             strava_access_token=strava_access_token
                             )
