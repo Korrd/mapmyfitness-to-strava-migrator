@@ -274,7 +274,6 @@ def upload_workouts_to_strava(workouts_dir: str, workout_list: list, strava_acce
       time.sleep(throttle_wait)
     elif response_status_code == '500': # Server error
       print(f"❌ Workout \"{workout_file}\" failed to upload due to error 500. Left in place so it can be retried")
-      return False
 
     if int(response_x_ratelimit_usage[0]) >= int(response_x_ratelimit_limit[0]): # Hit 15-min ratelimit
       print(f"\n⏰ 15-min ratelimit reached. Waiting {throttle_wait / 60} minutes before retrying\n")
@@ -283,4 +282,4 @@ def upload_workouts_to_strava(workouts_dir: str, workout_list: list, strava_acce
     if int(response_x_ratelimit_usage[1]) >= int(response_x_ratelimit_limit[1]): # Hit daily ratelimit
       print(f"\n💥 Daily ratelimit reached. Wait until tomorrow and try again.")
       return False
-  return True  
+  return True
