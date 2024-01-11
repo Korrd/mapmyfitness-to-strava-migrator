@@ -22,7 +22,7 @@ You can obtain it by opening any workout while looking at the network tab of the
 
 It'll look like this:
 
-```text
+```s
 Cookie: undefined=US.[SOME_VALUE]; api-key=[SOME_API_KEY]; auth-token=[SOME_AUTH_TOKEN]; auth-token-expiry=[SOME_DATE]; runwebsessionid=[SOME_VALUE]
 ```
 

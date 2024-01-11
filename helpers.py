@@ -228,7 +228,7 @@ def upload_workouts_to_strava(workouts_dir: str, workout_list: list, strava_acce
   # Getting strava's auth code
   http = urllib3.PoolManager()
   
-  for link, notes, workout_type, workout_id, workout_file in full_list:
+  for _, notes, _, _, workout_file in full_list:
     with open(workouts_dir + "/" + workout_file, 'rb') as file:
       tcx_data = file.read()
 
@@ -269,9 +269,11 @@ def upload_workouts_to_strava(workouts_dir: str, workout_list: list, strava_acce
             15m ratelimit [used/limit]: [{response_x_ratelimit_usage[0]},{response_x_ratelimit_limit[0]}] \
             daily ratelimit [used/limit]: [{response_x_ratelimit_usage[1]},{response_x_ratelimit_limit[1]}]")
       os.rename(f"{workouts_dir}/{workout_file}",f"{workouts_dir}/archive/{workout_file}")
+
     elif response_status_code == '429': # Hit ratelimiter
       print(f"\n⏰ Workout \"{workout_file}\" hit a ratelimit. Waiting {throttle_wait / 60} minutes before retrying\n")
       time.sleep(throttle_wait)
+
     elif response_status_code == '500': # Server error
       print(f"❌ Workout \"{workout_file}\" failed to upload due to error 500. Left in place so it can be retried")
 
