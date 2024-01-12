@@ -4,10 +4,10 @@
 import os
 from sys import argv as args
 import helpers as f
+from strava_oauth import strava_oauth as oauth
 
 def main(args):
-
-  result:bool = False
+  result = False
 
   # Let's get our flags...
   FLAG_HELP = "--help" in args
@@ -15,17 +15,57 @@ def main(args):
     f.print_help_text(2)
 
   # Get args
-  workdir = os.path.dirname(os.path.realpath(__file__))
   mmr_cookie = f.get_argument_value(args=args, flag="--mmr-cookie", separator="--mmr-cookie=")
-  strava_access_token = f.get_argument_value(args=args, flag="--strava-access-token", separator="--strava-access-token=")
-  
+
   if mmr_cookie == "":
     print("❌ Argument \"--mmr-cookie\" is missing or empty!")
     f.print_help_text(1)
 
+  #region #? Do strava auth
+  workdir = os.path.dirname(os.path.realpath(__file__))
+  secrets_file = f"{workdir}/temp/secrets.json"
+  strava_access_token, refresh_token = "", ""
+
+  if not os.path.exists(secrets_file):
+    # There's no secrets file. Ask user for client ID & Secret
+    client_id, client_secret = oauth.ask_for_secrets()
+    if client_secret == "" or client_id == "":
+      print("[strava] \033[91m❌ Either the \"Client Secret\" or \"ID\" provided are empty. Check them then try again.\033[0m")
+      exit(1)
+    else:
+      # Write client info to secrets file
+      oauth.write_secrets_file(secrets_file=secrets_file, \
+                              client_id=client_id, \
+                              client_secret=client_secret)
+  else: 
+    # Get all credentials from file
+    strava_access_token, refresh_token, client_id, client_secret = oauth.read_secrets_file(secrets_file)
+
   if strava_access_token == "":
-    print("❌ Argument \"--strava-access-token\" is missing or empty!")
-    f.print_help_text(1)
+    # No access token present. Let's retrieve them
+    strava_access_token, refresh_token = oauth.do_oauth_flow(client_id=client_id, \
+                                                      client_secret=client_secret)
+  else:
+    if not oauth.check_access_token(strava_access_token):
+      # Refresh invalid access_token since it's invalid, so we don't bother user
+      strava_access_token = oauth.refresh_access_token(client_id=client_id, \
+                                                client_secret=client_secret, \
+                                                refresh_token=refresh_token)
+
+  if strava_access_token == "":
+    # If at this point we still have no access token, we've failed and can't do anything about it,
+    # so we exit with error
+    print("[strava] \033[91m❌ Unable to retrieve tokens. Check provided \"Client ID\" & \"Secret\", then try again\033[0m")
+    exit(1)
+  else:
+    oauth.write_secrets_file(secrets_file=secrets_file, \
+                            client_id=client_id, \
+                            client_secret=client_secret, \
+                            access_token=strava_access_token, \
+                            refresh_token=refresh_token)
+
+  print("[strava] \033[92m🔐 Authentication successful!\n\033[0m")
+  #endregion
 
   csv_url = "https://www.mapmyfitness.com/workout/export/csv"
   files_dir = "outputs"

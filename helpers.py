@@ -45,14 +45,11 @@ def print_help_text(exit_code:int = 1):
   print("| Tool to migrate all mapmyride workouts to strava |".center(52))
   print("=" * 52)
   print(
-      "\nUsage: migrate-mapmyride-to-strava.py --csv_file=my_mmr_worklouts_file.csv --mmr_cookie=\"session cookie on a string\" --strava-access-token=\"access token with activity:write permission\""
+      "\nUsage: migrate-mapmyride-to-strava.py --mmr_cookie=\"session cookie on a string\""
   )
   print("\nFlags:")
   print(
       "--mmr_cookie          | The session cookie from mapmyride. It can be stolen from any browser request to mapmyride via the inspector."
-  )
-  print(
-      "--strava-access-token | Access token from strava API app. Must have activity:write permission. Follow these instructions to obtain it: https://yizeng.me/2017/01/11/get-a-strava-api-access-token-with-write-permission/"
   )
   print("--help              | Prints this help text")
   exit(exit_code)

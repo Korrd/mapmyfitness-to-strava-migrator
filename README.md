@@ -42,7 +42,7 @@ You can get it as follows:
 Invoke it as follows: 
 
 ```bash
-python migrator.py --mmr_cookie="<session cookie on a string>" --strava-access-token="<access token with activity:write permission>"
+python migrator.py --mmr_cookie="<session cookie on a string>"
 ```
 
 Once the script is triggered, it'll request all of your workouts one by one as per the CSV file and download them to a folder called outputs.
