@@ -28,22 +28,15 @@ Cookie: undefined=US.[SOME_VALUE]; api-key=[SOME_API_KEY]; auth-token=[SOME_AUTH
 
 Our flag value is the part right of the `Cookie: ` bit.
 
-### strava-access-token
-
-This is a token that you must obtain from the Strava API APP created in order to programatically access Strava itself. 
-
-You can get it as follows:
-
-- [Creating a Strava API APP](https://developers.strava.com/docs/getting-started/#account) - Follow from step 2 on. This'll give you a read-only app. That's fine, as we'll get a write access app on the next step
-- [Getting a Strava write token](https://yizeng.me/2017/01/11/get-a-strava-api-access-token-with-write-permission/) - This'll give you a write app. When adding the permission strings only add the `activity:write` permission, since there's an issue when creating a write token with more than one permission at a time.
-
 ## How to use it
 
-Invoke it as follows: 
+- Get the `Client ID` & `Secret` values from strava's at its [API config page](https://www.strava.com/settings/api). If no API app is set, you can create a new one [following these instructions](https://developers.strava.com/docs/getting-started/#account)
 
-```bash
-python migrator.py --mmr_cookie="<session cookie on a string>"
-```
+- Just run the tool from `run.py`, providing `Client ID` and `Secret` when asked, then wait for it: 
+
+  ```bash
+  python migrator.py --mmr_cookie="<session cookie on a string>"
+  ```
 
 Once the script is triggered, it'll request all of your workouts one by one as per the CSV file and download them to a folder called outputs.
 
