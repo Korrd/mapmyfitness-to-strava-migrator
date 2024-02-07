@@ -1,12 +1,16 @@
-
-# TODO - Nice to have: automatic oauth2 auth flow
-
+"""
+Main file
+"""
 import os
 from sys import argv as args
+import sys
 import helpers as f
 from strava_oauth import strava_oauth as oauth
 
 def main(args):
+  """
+  Main program
+  """
   result = False
 
   # Let's get our flags...
@@ -31,7 +35,7 @@ def main(args):
     client_id, client_secret = oauth.ask_for_secrets()
     if client_secret == "" or client_id == "":
       print("[strava] \033[91m❌ Either the \"Client Secret\" or \"ID\" provided are empty. Check them then try again.\033[0m")
-      exit(1)
+      sys.exit(1)
     else:
       # Write client info to secrets file
       oauth.write_secrets_file(secrets_file=secrets_file, \
@@ -56,7 +60,7 @@ def main(args):
     # If at this point we still have no access token, we've failed and can't do anything about it,
     # so we exit with error
     print("[strava] \033[91m❌ Unable to retrieve tokens. Check provided \"Client ID\" & \"Secret\", then try again\033[0m")
-    exit(1)
+    sys.exit(1)
   else:
     oauth.write_secrets_file(secrets_file=secrets_file, \
                             client_id=client_id, \
@@ -92,7 +96,7 @@ def main(args):
     print("✅ CSV File downloaded.\n")
   else:
     print("❌ Failed to Obtain CSV file.")
-    exit(1)
+    sys.exit(1)
 
   workout_list = f.list_mmr_workouts(csv_file_path=csv_file)
 
@@ -102,7 +106,7 @@ def main(args):
 
   if not result:
     print("❌ Failed to obtain mapMyRide workouts.")
-    exit(1)
+    sys.exit(1)
   else:
     print("\n✅ Workouts downloaded. Uploading to Strava...\n")
 
@@ -112,10 +116,10 @@ def main(args):
                             )
   if result:
     print("✅ Done. Workouts uploaded.")
-    exit(0)
+    sys.exit(0)
   else:
     print("❌ Failed to upload workouts to Strava.")
-    exit(1)
+    sys.exit(1)
 
 if __name__ == "__main__":
   main(args)
