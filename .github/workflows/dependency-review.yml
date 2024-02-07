@@ -21,7 +21,7 @@ on:
 permissions:
   contents: read
   # Required if `comment-summary-in-pr: true` is uncommented below
-  # pull-requests: write
+  pull-requests: write
 
 jobs:
   dependency-review:
