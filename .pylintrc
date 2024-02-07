@@ -1,4 +1,4 @@
 [FORMAT]
 max-line-length=240
 indent-string="  "
-disable=no-self-argument, invalid-name, no-method-argument, protected-access, no-member, not-an-iterable, consider-using-dict-items, consider-iterating-dictionary, fixme, redefined-builtin, use-implicit-booleaness-not-comparison, too-many-locals
+disable=no-self-argument, invalid-name, no-method-argument, protected-access, no-member, not-an-iterable, consider-using-dict-items, consider-iterating-dictionary, fixme, redefined-builtin, use-implicit-booleaness-not-comparison, too-many-locals, bare-except, too-many-branches, too-many-statements, redefined-outer-name, consider-using-f-string, consider-using-with

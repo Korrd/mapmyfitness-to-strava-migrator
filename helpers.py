@@ -10,7 +10,13 @@ This module contains all functions used by this program, for greater code clarit
 
 For more details onto each function, these are also docstring'd.
 """
-import  csv, os, time, urllib.request, urllib3, zlib
+import csv
+import os
+import time
+import zlib
+import sys
+import urllib.request
+import urllib3
 
 def get_argument_value(args:list[str], flag:str, separator:str = "=") -> str:
   """
@@ -52,7 +58,7 @@ def print_help_text(exit_code:int = 1):
       "--mmr_cookie          | The session cookie from mapmyride. It can be stolen from any browser request to mapmyride via the inspector."
   )
   print("--help              | Prints this help text")
-  exit(exit_code)
+  sys.exit(exit_code)
 
 def get_mmr_csv_file(headers:tuple, workdir: str, url: str = "https://www.mapmyfitness.com/workout/export/csv") -> bool:
   """
@@ -68,7 +74,8 @@ def get_mmr_csv_file(headers:tuple, workdir: str, url: str = "https://www.mapmyf
     - `True` if successful, `False` if not.
 
   #### Notes
-  This function and how to retrieve the csv file programatically were derived from its [CSV documentation](https://support.mapmyfitness.com/hc/en-us/articles/1500009118782-Export-Workout-Data) & by some req-res hacking, since applications for API access are no longer being granted.
+  This function and how to retrieve the csv file programatically were derived from its [CSV documentation](https://support.mapmyfitness.com/hc/en-us/articles/1500009118782-Export-Workout-Data),
+  and by some req-res hacking, since applications for API access are no longer being granted.
   """
   outputfile = f"{workdir}/workout_list.csv"
   # First, lets build our request, with stolen data from an actually working request from the
@@ -83,9 +90,9 @@ def get_mmr_csv_file(headers:tuple, workdir: str, url: str = "https://www.mapmyf
     page = urllib.request.urlopen(my_request).read().decode("utf-8")
     # Let's decode our gzip
     # Now, let's store our file onto disk
-    outfile = open(outputfile,"w")
-    outfile.write(str(page))
-    outfile.close()
+
+    with open(outputfile, mode="w", encoding="utf8") as f:
+      f.write(str(page))
   except:
     return False, ""
 
@@ -111,7 +118,7 @@ def list_mmr_workouts(csv_file_path: str) -> list:
   col_dl_link = 14
   payload = []
   # First, let's get info required to download a workout
-  with open (csv_file_path, mode="r", newline="") as csvfile:
+  with open(csv_file_path, mode="r", newline="", encoding="utf8") as csvfile:
     item = csv.reader(csvfile, delimiter=",")
     for row in item:
       # This will skip the CSV file's header
@@ -148,7 +155,7 @@ def download_mmr_workouts(headers: tuple, output_dir: str, workout_list: list) -
   # Let's download each file from the payload list to a temp folder
   i = 0 # This'll be used to generate unique readable filenames
 
-  for url, comments, wtype, id in workout_list:
+  for url, _, wtype, id in workout_list:
     # Let's build our filename and check if it's already been saved. This'll allow some degree of resume capability
     filename = f"{'{0:0>4}'.format(str(i))}-{id}-{wtype.replace(' ','-').replace('/','')}.tcx"
     i = i + 1
@@ -172,9 +179,9 @@ def download_mmr_workouts(headers: tuple, output_dir: str, workout_list: list) -
         decoded_result = zlib.decompress(page, 16 + zlib.MAX_WBITS).decode("utf-8")
         # Now, let's store our file onto disk
         print(f"💾 Exporting file \"{filename}\" from workout at \"{url}\"...")
-        outfile = open(outputfile,"w")
-        outfile.write(str(decoded_result))
-        outfile.close()
+        with open(outputfile, mode="w", encoding="utf8") as f:
+          f.write(str(decoded_result))
+
       except:
         return False
     else:
@@ -279,6 +286,6 @@ def upload_workouts_to_strava(workouts_dir: str, workout_list: list, strava_acce
       time.sleep(throttle_wait)
 
     if int(response_x_ratelimit_usage[1]) >= int(response_x_ratelimit_limit[1]): # Hit daily ratelimit
-      print(f"\n💥 Daily ratelimit reached. Wait until tomorrow and try again.")
+      print("\n💥 Daily ratelimit reached. Wait until tomorrow and try again.")
       return False
   return True
