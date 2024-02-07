@@ -4,14 +4,14 @@
 
 ## Motivation
 
-I migrated to Strava after Endomondo got bought by Underarmour and it got replaced by multiple apps that offered lesser functionality. Since mapmyride does not offer a way to batch-export its workouts nor there were any tools to do so on the internet, I got tired of waiting and decided to code one of my own.
+I migrated to Strava after Endomondo got bought by Underarmour and it got replaced by multiple apps that offered lesser functionality. Since Mapmyride does not offer a way to batch-export its workouts nor there were any tools to do so on the internet, I got tired of waiting and decided to code one of my own.
 
 ## Prerequisites
 
 If needed, install all required packages described on the `requirements.txt` file using pip as follows:
 
 ```bash
-pip3 install -r requirements.txt
+make setup
 ```
 
 ## Required parameters & preparation
