@@ -29,11 +29,16 @@ jobs:
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v4
+      - name: 'Install dependencies'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v4
         # Commonly enabled options, see https://github.com/actions/dependency-review-action#configuration-options for all available options.
         with:
           fail-on-severity: moderate
+          vulnerability-check: true
         #   deny-licenses: GPL-1.0-or-later, LGPL-2.0-or-later
           comment-summary-in-pr: true
         #   retry-on-snapshot-warnings: true
