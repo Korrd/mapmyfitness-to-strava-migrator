@@ -5,7 +5,7 @@ from webbrowser import open_new_tab
 
 class strava_oauth:
   def do_oauth_flow(client_id: str, client_secret: str):
-    
+
     # Get auth successful screen
     with open(f"{os.path.dirname(os.path.realpath(__file__))}/oauth_success.htm") as file:
       html_code = bytes("".join(file.readlines()), "utf-8")
@@ -52,7 +52,7 @@ class strava_oauth:
     server = HTTPServer(('localhost', 8000), RequestHandler)
     server.handle_request()
     return server.access_token, server.refresh_token
-  
+
   def refresh_access_token(client_id: str, client_secret: str, refresh_token: str) -> str:
     token_url = 'https://www.strava.com/oauth/token'
     payload = {

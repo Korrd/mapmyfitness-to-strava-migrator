@@ -18,7 +18,7 @@ pip3 install -r requirements.txt
 
 ### mmr-cookie
 
-This is the mapMyRide session cookie from any browser request. It's a string on the "Cookie" header that will allow you to authenticate your request to mapMyRide. 
+This is the mapMyRide session cookie from any browser request. It's a string on the "Cookie" header that will allow you to authenticate your request to mapMyRide.
 
 You can obtain it by opening any workout while looking at the network tab of the browser's inspector, and looking for it on the request section of the first request made by the browser.
 
@@ -34,7 +34,7 @@ Our flag value is the part right of the `Cookie: ` bit.
 
 - Get the `Client ID` & `Secret` values from strava's at its [API config page](https://www.strava.com/settings/api). If no API app is set, you can create a new one [following these instructions](https://developers.strava.com/docs/getting-started/#account)
 
-- Just run the tool from `run.py`, providing `Client ID` and `Secret` when asked, then wait for it: 
+- Just run the tool from `run.py`, providing `Client ID` and `Secret` when asked, then wait for it:
 
   ```bash
   python migrator.py --mmr_cookie="<session cookie on a string>"

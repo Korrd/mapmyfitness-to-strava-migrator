@@ -37,7 +37,7 @@ def main(args):
       oauth.write_secrets_file(secrets_file=secrets_file, \
                               client_id=client_id, \
                               client_secret=client_secret)
-  else: 
+  else:
     # Get all credentials from file
     strava_access_token, refresh_token, client_id, client_secret = oauth.read_secrets_file(secrets_file)
 
