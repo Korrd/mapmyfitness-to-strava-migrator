@@ -1,5 +1,7 @@
 # Mapmyride to Strava migrator
 
+![linting badge](https://github.com/korrd/mapmyfitness-to-strava-migrator/actions/workflows/pylint.yml/badge.svg)
+
 ## Motivation
 
 I migrated to Strava after Endomondo got bought by Underarmour and it got replaced by multiple apps that offered lesser functionality. Since mapmyride does not offer a way to batch-export its workouts nor there were any tools to do so on the internet, I got tired of waiting and decided to code one of my own.
