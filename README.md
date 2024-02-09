@@ -1,6 +1,6 @@
 # Mapmyride to Strava migrator
 
-![linting badge](https://github.com/korrd/mapmyfitness-to-strava-migrator/actions/workflows/pylint.yml/badge.svg)
+![linting badge](https://github.com/korrd/mapmyfitness-to-strava-migrator/actions/workflows/pylint.yml/badge.svg) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![version](./img/pyversion.svg)
 
 ## Motivation
 
