@@ -91,7 +91,7 @@ def get_mmr_csv_file(headers:tuple, workdir: str, url: str = "https://www.mapmyf
     # Let's decode our gzip
     # Now, let's store our file onto disk
 
-    with open(outputfile, mode="w", encoding="utf8") as f:
+    with open(outputfile, mode="wb", encoding="utf8") as f:
       f.write(str(page))
   except:
     return False, ""
